@@ -1,0 +1,35 @@
+library(quanteda)
+
+##creating a data frame matrix (smth like dtm/tdm in tm package) from a quanteda corpus
+
+mydfm <- dfm(myCorpus, remove = c(stopwords("finnish"), "jo", "myös","eik?","ettei","eli",
+                                  "tätä", "aina","kaikki","tähän","jonka","niiden","ennen","edessä", "sitten",
+                                  "siihen","sitä", "kuitenkin","tämän", "vielä","koko", "vain", "eri","meillä",
+                                  "tästä","mitä", "kanssa","mutta","voi","siitä", "sen","tässä","viime",
+                                  "saada", "ottaa", "lisäksi", "000", "tehdä", "tulla", "sanoa", "esimerkiksi", "kertoa", "pitää", "voida", "auml"), 
+             remove_punct = TRUE)
+
+##it still is a bit dirty - need to find out how to remove numbers - maybe google or ask someone
+mydfm
+
+##top 200 words
+freq.words <- topfeatures(mydfm, 200)
+write.csv2(freq.words, file="top200words.csv")
+
+
+##create two new corpora - one made of pre and one of post words and merge them
+goalscorpus1 <- corpus(merged$pre)
+goalscorpus2 <- corpus(merged$post)
+goalscorpus <- goalscorpus1 + goalscorpus2
+
+##make a dfm out of the merged corpus and count frequencies
+goalsdfm <- dfm(goalscorpus, remove = c(stopwords("finnish"), "jo", "myös","eik?","ettei","eli",
+                                        "tätä", "aina","kaikki","tähän","jonka","niiden","ennen","edessä", "sitten",
+                                        "siihen","sitä", "kuitenkin","tämän", "vielä","koko", "vain", "eri","meillä",
+                                        "tästä","mitä", "kanssa","mutta","voi","siitä", "sen","tässä","viime",
+                                        "saada", "ottaa", "lisäksi", "000", "tehdä", "tulla", "sanoa", "esimerkiksi", "kertoa", "pitää", "voida", "auml"), 
+                remove_punct = TRUE)
+
+##top 200 words out of the context of the goal words
+freq.words <- topfeatures(goalsdfm, 300)
+write.csv2(freq.words, file="top300pre&post.csv")
