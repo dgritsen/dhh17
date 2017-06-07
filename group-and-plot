@@ -1,0 +1,24 @@
+require("dplyr")
+require("ggplot2")
+require("zoo")
+
+##create a group function that groups by date
+group <- function(data, groupBy, facetBy, dateFunction) {
+  return (data %>% mutate(date = as.Date(dateFunction(date))) %>% group_by_("date",facetBy,groupBy) %>% count())
+}
+
+##apply to the data
+energyagents <- filter(energyagents, date>as.Date("2007-01-01"))
+
+# change filtering criteria as needed
+groupedAgents <- group(energyagents,"name","name",as.yearqtr) %>% group_by(name) %>% filter(sum(n)>120) %>% ungroup()
+
+# change ylim as needed to control for the number of mentionings
+ggplot(groupedAgents, aes_string(x="date",y="n",group="name",color="name")) + geom_line() + coord_cartesian(ylim=c(0, 50))
+ggplot(groupedAgents,
+       aes_string(
+         x = "date",
+         y = "n",
+         group = "name",
+         color = "name"
+       )) + geom_line() + coord_cartesian(ylim = c(0, 16))
