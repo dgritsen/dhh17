@@ -1,0 +1,36 @@
+library("tm")
+library("data.table")
+
+#set WD -> change here for your WD
+setwd("C:/Data/dhh/")
+
+#read the csv file with fread and no encoding problem here! 
+articles <- fread("myfile.csv", encoding="UTF-8")
+
+##inspect options
+class(articles)
+#get back data as a table by any heading in the csv, e.g. language
+table(articles$language)
+#get back data as a table by authors
+table(articles$authors)
+#get back data as a table by publisher
+table(articles$publisher)
+
+##load all csv in one folder
+files <- list.files(pattern="*.csv")
+##read them into one object
+##specify that there is no header and language is finnish 
+energyagents <- rbindlist(lapply(files, fread, header=FALSE, encoding="UTF-8",
+                               colClasses = c("character", "character", "character", "character")))
+## header specified as false, thus need to create and assign names to columns
+cols <- c("queryLemma", "name", "date", "id")
+colnames(energyagents) <- cols
+## and write a csv out of it
+write.csv2(energyagents, file="energyagents.csv")
+
+
+## to create subsets
+#create a subset of articles in finnish
+articlesfi <- articles[articles$language == "fi",]
+#create subset of articles from certain years
+articles2017 <- articles[substr(articles$date_published, 1, 4) == "2017",]
