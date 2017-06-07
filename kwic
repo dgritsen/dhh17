@@ -1,0 +1,19 @@
+library(quanteda)
+
+#create a corpus function to create corpus using lemmarized text
+myCorpus <- corpus(articlesfi$text_l)
+
+#run KWIC for all verbs selected, number stands for the number of tokens before and after
+x <- kwic(myCorpus, "tavoite", 4)
+x1 <- kwic(myCorpus, "tulos", 4)
+x2 <-  kwic(myCorpus, "päämäärä", 4)
+x3 <-  kwic(myCorpus, "tähtäin", 4)
+x4 <-  kwic(myCorpus, "toive", 4)
+x5 <-  kwic(myCorpus, "suunta", 4)
+x6 <-  kwic(myCorpus, "määränpää", 4)
+x7 <- kwic(myCorpus, "kohde", 4)
+x8 <- kwic(myCorpus, "maali", 4)
+
+#merging data frames x-x8 into one and write as csv
+merged <- Reduce(function(x,y) merge(x,y, all=TRUE), list(x, x1, x2, x3, x4, x5, x6, x7, x8))
+write.csv2(merged, file="mergedgoals.csv")
